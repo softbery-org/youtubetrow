@@ -1,0 +1,7 @@
+{
+  "ApplicationPath": "c:\\Program Files(x86)\\YoutubeKG",
+  "DownloadPath": "downloaded/",
+  "ConvertYouTubeFileTo": "mp3",
+  "DeleteDownloadedVideoFile": false,
+  "SaveConvertedAudioInDateTimeFolder": true
+}
