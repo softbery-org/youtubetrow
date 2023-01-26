@@ -1,22 +1,21 @@
 ﻿using Softbery.Logger;
+using Softbery.Text.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Xabe.FFmpeg;
 using YoutubeExplode;
 using YoutubeExplode.Common;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos.Streams;
-using Xabe.FFmpeg;
-using System.Threading;
-using Microsoft.Extensions.Configuration;
-using static System.Net.Mime.MediaTypeNames;
-using System.Drawing;
-using Softbery.Text.Extensions;
 
-namespace YoutubeKG.Forms
+using Artube.Containers;
+
+namespace Artube.Forms
 {
 	/// <summary>
 	/// 
@@ -45,7 +44,7 @@ namespace YoutubeKG.Forms
 			downloadFullListAndConvertToMp3Button.Enabled = false;
 
 			Logger.Write += AddLogMessage;
-			Logger.Write(new Log { TypeLog=LogType.Information, Message="Program is started."});
+			Logger.Write(new Log { Type = Softbery.Logger.LogType.Information, Message = "Program is started." });
 		}
 
 		/// <summary>
@@ -55,21 +54,21 @@ namespace YoutubeKG.Forms
 		private void AddLogMessage(Log log)
 		{
 			Color color = new Color();
-			logger.AddLog(log.TypeLog, log.Message);
+			logger.AddLog(log.Type, log.Message);
 			log = logger.Logs.Last();
 
-			switch (log.TypeLog)
+			switch (log.Type)
 			{
-				case LogType.Information:
+				case Softbery.Logger.LogType.Information:
 					color = Color.Blue;
 					break;
-				case LogType.Warning:
+				case Softbery.Logger.LogType.Warning:
 					color = Color.Orange;
 					break;
-				case LogType.Error:
+				case Softbery.Logger.LogType.Error:
 					color = Color.Red;
 					break;
-				case LogType.Success:
+				case Softbery.Logger.LogType.Success:
 					color = Color.Green;
 					break;
 				default:
@@ -88,14 +87,14 @@ namespace YoutubeKG.Forms
 		/// </summary>
 		/// <param name="log">Log for colorize</param>
 		/// <param name="color">Color</param>
-		private void _RichTextBoxColorize(Log log , Color color, Font font = null)
+		private void _RichTextBoxColorize(Log log, Color color, Font font = null)
 		{
 			// ////////////////////////////////////////////////////////////////
 			// Added from Softbery.Text.RichTextBoxColorizeExtensions
 			// ////////////////////////////////////////////////////////////////
 			var date = log.Date;
 			var time = log.Time;
-			var type = log.TypeLog.ToString();
+			var type = log.Type.ToString();
 			var message = log.Message;
 			var box = logRichTextBox;
 
@@ -119,18 +118,18 @@ namespace YoutubeKG.Forms
 		/// <param name="e">event arguments</param>
 		private async void GetFullListButton_Click(object sender, EventArgs e)
 		{
-			Logger.Write(new Log { TypeLog = LogType.Information, Message = "Getting list from url ..." });
-			
+			Logger.Write(new Log { Type = Softbery.Logger.LogType.Information, Message = "Getting list from url ..." });
+
 			YoutubeExplode.YoutubeClient youtube = new YoutubeExplode.YoutubeClient();
 
 			try
 			{
-				Logger.Write(new Log { TypeLog = LogType.Information, Message = "Getting playlist ..." });
+				Logger.Write(new Log { Type = Softbery.Logger.LogType.Information, Message = "Getting playlist ..." });
 
 				var plylist = await youtube.Playlists.GetVideosAsync(urlTextBox.Text).CollectAsync();
 				urls = new List<PlaylistVideo>();
 
-				if (plylist.Count>=1)
+				if (plylist.Count >= 1)
 				{
 					dataGridView1.DataSource = null;
 				}
@@ -146,8 +145,8 @@ namespace YoutubeKG.Forms
 			}
 			catch (Exception ex)
 			{
-				Logger.Write(new Log { TypeLog = LogType.Error, Message = $"Can't get current playlist <b>{urlTextBox.Text}</b>. Reason: "+ex.Message });
-			}			
+				Logger.Write(new Log { Type = Softbery.Logger.LogType.Error, Message = $"Can't get current playlist <b>{urlTextBox.Text}</b>. Reason: " + ex.Message });
+			}
 		}
 
 		/// <summary>
@@ -160,16 +159,16 @@ namespace YoutubeKG.Forms
 			var folder = AppDomain.CurrentDomain.BaseDirectory + "\\downloaded\\";
 			singleMp3DownloadAndConvertButton.Enabled = false;
 
-			Logger.Write(new Log() { TypeLog=LogType.Information, Message="Start downloading..." });
+			Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = "Start downloading..." });
 
 			// Download
 			await DownloadAsync(selected);
 
-			Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Converting title {selected} to mp3..." });
-			
+			Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Converting title {selected} to mp3..." });
+
 			// Convert
 			var convert = new NReco.VideoConverter.FFMpegConverter();
-			convert.ConvertMedia(folder+urls[selected].Title+".mp4",  folder + urls[selected].Title + ".mp3", "mp3");
+			convert.ConvertMedia(folder + urls[selected].Title + ".mp4", folder + urls[selected].Title + ".mp3", "mp3");
 
 			singleMp3DownloadAndConvertButton.Enabled = true;
 		}
@@ -185,7 +184,7 @@ namespace YoutubeKG.Forms
 			var client = new YoutubeClient();
 			var folder = AppDomain.CurrentDomain.BaseDirectory + "\\downloaded\\";
 			// Log
-			Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Get information about {urls[index].Title}." });
+			Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Get information about {urls[index].Title}." });
 
 			var streamInfoSet = await client.Videos.Streams.GetManifestAsync(urls[index].Url);
 			var streamInfo = streamInfoSet.GetMuxedStreams().GetWithHighestBitrate();
@@ -194,24 +193,24 @@ namespace YoutubeKG.Forms
 			{
 				try
 				{
-					Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Create folder: {folder}." });
+					Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Create folder: {folder}." });
 					Directory.CreateDirectory(folder);
 				}
 				catch (Exception ex)
 				{
-					Logger.Write(new Log() { TypeLog = LogType.Error, Message = $"Can't create {folder}. Because: " + ex.Message });
+					Logger.Write(new Log() { Type = Softbery.Logger.LogType.Error, Message = $"Can't create {folder}. Because: " + ex.Message });
 				}
 			}
 
 			try
 			{
-				Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Downloading {urls[index].Title}." });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Downloading {urls[index].Title}." });
 				await client.Videos.Streams.DownloadAsync(streamInfo, folder + urls[index].Title + "." + type);
-				Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Success." });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Success." });
 			}
 			catch (Exception ex)
 			{
-				Logger.Write(new Log() { TypeLog = LogType.Error, Message = $"Can't download {urls[index].Title}. Reason: " + ex.Message });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Error, Message = $"Can't download {urls[index].Title}. Reason: " + ex.Message });
 			}
 		}
 
@@ -220,28 +219,28 @@ namespace YoutubeKG.Forms
 			var folder = AppDomain.CurrentDomain.BaseDirectory + "\\downloaded\\";
 			downloadFullListAndConvertToMp3Button.Enabled = false;
 
-			Logger.Write(new Log() { TypeLog = LogType.Information, Message = "Start downloading list..." });
+			Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = "Start downloading list..." });
 
 			for (int i = 0; i < urls.Count; i++)
 			{
 				var file = AppDomain.CurrentDomain.BaseDirectory + "\\downloaded\\" + urls[i].Title + ".mp4";
 
-				Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Downloading: {urls[i].Title}" });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Downloading: {urls[i].Title}" });
 
 				// Download
 				await DownloadAsync(i);
 
-				Logger.Write(new Log() { TypeLog = LogType.Success, Message = $"Downloaded!" });
-				Logger.Write(new Log() { TypeLog = LogType.Information, Message = $"Converting to mp3: {urls[i].Title}" });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Success, Message = $"Downloaded!" });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Information, Message = $"Converting to mp3: {urls[i].Title}" });
 
 				// Convert
 				var convert = new NReco.VideoConverter.FFMpegConverter();
 				convert.ConvertMedia(folder + urls[i].Title + ".mp4", folder + urls[i].Title + ".mp3", "mp3");
 
-				Logger.Write(new Log() { TypeLog = LogType.Success, Message = $"Converted!" });
+				Logger.Write(new Log() { Type = Softbery.Logger.LogType.Success, Message = $"Converted!" });
 			}
 
-			Logger.Write(new Log() { TypeLog = LogType.Success, Message = "List downloaded and converted." });
+			Logger.Write(new Log() { Type = Softbery.Logger.LogType.Success, Message = "List downloaded and converted." });
 
 			downloadFullListAndConvertToMp3Button.Enabled = true;
 		}
@@ -251,19 +250,9 @@ namespace YoutubeKG.Forms
 			selected = dataGridView1.CurrentRow.Index;
 		}
 
-		private void Button4_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void Button5_Click(object sender, EventArgs e)
-		{
-			
-		}
-
 		private void UrlTextBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyValue==13)
+			if (e.KeyValue == 13)
 			{
 				// Get full list from Youtube
 				GetFullListButton_Click(sender, e);
@@ -273,6 +262,18 @@ namespace YoutubeKG.Forms
 		private void LogWebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
 		{
 
+		}
+
+		private void AboutFormButton_Click(object sender, EventArgs e)
+		{
+			AboutForm frm = new AboutForm();
+			frm.Show();
+		}
+
+		private void Form1MouseButton_Click(object sender, EventArgs e)
+		{
+			Form1 frm = new Form1();
+			frm.Show();
 		}
 	}
 }

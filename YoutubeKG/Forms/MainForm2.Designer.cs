@@ -1,4 +1,4 @@
-﻿namespace YoutubeKG.Forms
+﻿namespace Artube.Forms
 {
 	partial class MainForm2
 	{
@@ -36,6 +36,8 @@
 			this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.logRichTextBox = new System.Windows.Forms.RichTextBox();
+			this.aboutFormButton = new System.Windows.Forms.Button();
+			this.form1MouseButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -113,16 +115,38 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.logRichTextBox.Location = new System.Drawing.Point(417, 142);
 			this.logRichTextBox.Name = "logRichTextBox";
-			this.logRichTextBox.Size = new System.Drawing.Size(380, 355);
+			this.logRichTextBox.Size = new System.Drawing.Size(380, 356);
 			this.logRichTextBox.TabIndex = 16;
 			this.logRichTextBox.Text = "";
 			this.logRichTextBox.WordWrap = false;
+			// 
+			// aboutFormButton
+			// 
+			this.aboutFormButton.Location = new System.Drawing.Point(591, 104);
+			this.aboutFormButton.Name = "aboutFormButton";
+			this.aboutFormButton.Size = new System.Drawing.Size(75, 23);
+			this.aboutFormButton.TabIndex = 17;
+			this.aboutFormButton.Text = "About";
+			this.aboutFormButton.UseVisualStyleBackColor = true;
+			this.aboutFormButton.Click += new System.EventHandler(this.AboutFormButton_Click);
+			// 
+			// form1MouseButton
+			// 
+			this.form1MouseButton.Location = new System.Drawing.Point(672, 104);
+			this.form1MouseButton.Name = "form1MouseButton";
+			this.form1MouseButton.Size = new System.Drawing.Size(87, 23);
+			this.form1MouseButton.TabIndex = 18;
+			this.form1MouseButton.Text = "Form1 Mouse";
+			this.form1MouseButton.UseVisualStyleBackColor = true;
+			this.form1MouseButton.Click += new System.EventHandler(this.Form1MouseButton_Click);
 			// 
 			// MainForm2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(809, 509);
+			this.ClientSize = new System.Drawing.Size(809, 510);
+			this.Controls.Add(this.form1MouseButton);
+			this.Controls.Add(this.aboutFormButton);
 			this.Controls.Add(this.logRichTextBox);
 			this.Controls.Add(this.progressBar1);
 			this.Controls.Add(this.dataGridView1);
@@ -131,7 +155,7 @@
 			this.Controls.Add(this.urlTextBox);
 			this.Controls.Add(this.getFullListButton);
 			this.Name = "MainForm2";
-			this.Text = "Form1";
+			this.Text = "Artube";
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -148,6 +172,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.RichTextBox logRichTextBox;
+		private System.Windows.Forms.Button aboutFormButton;
+		private System.Windows.Forms.Button form1MouseButton;
 	}
 }
 
